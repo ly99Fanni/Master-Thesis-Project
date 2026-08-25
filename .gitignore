@@ -1,0 +1,33 @@
+# Environment files
+.env
+.env.*
+
+# Virtual environments
+venv/
+.venv/
+
+# IDE files
+.idea/
+.vscode/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# PyTorch model files
+*.pt
+*.pth
+
+# My files
+plots
+results
+plot.py
