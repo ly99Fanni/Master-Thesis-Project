@@ -30,10 +30,10 @@ Thumbs.db
 # My files
 plots/Evaluation
 plots/Archive
-old model weights
-prev_version
+old model weights/
+prev_version/
 results/Archieve
-testing
+testing/
 
 # ppt
 *.pptx
