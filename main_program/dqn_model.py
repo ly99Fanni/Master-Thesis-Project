@@ -1,6 +1,5 @@
-import torch
 import torch.nn as nn
-from config import Config
+from main_program.config import Config
 
 
 class SimpleDQN(nn.Module):
@@ -8,9 +7,16 @@ class SimpleDQN(nn.Module):
         super().__init__()
         self.config = config
         self.network = nn.Sequential(
-            nn.Linear(state_size, self.config.hidden_size),
+            nn.Linear(state_size, 128),
             nn.ReLU(),
-            nn.Linear(self.config.hidden_size, num_actions)
+
+            nn.Linear(128, 64),
+            nn.ReLU(),
+
+            nn.Linear(64, 32),
+            nn.ReLU(),
+
+            nn.Linear(32, num_actions)
         )
 
     def forward(self, state):
@@ -24,37 +30,34 @@ class DuelingDQN(nn.Module):
         super().__init__()
 
         self.config = config
-        self.feature = nn.Sequential(
-            nn.Linear(state_size, self.config.hidden_size),
+        self.network = nn.Sequential(
+            nn.Linear(state_size, 128),
             nn.ReLU(),
-            nn.Linear(self.config.hidden_size, self.config.hidden_size),
+
+            nn.Linear(128, 64),
+            nn.ReLU(),
+
+            nn.Linear(64, 32),
             nn.ReLU()
         )
 
-        # State value = V(s)
-        self.value = nn.Linear(self.config.hidden_size, 1)
+        # State value V(s)
+        self.value = nn.Linear(32, 1)
 
-        # Advantage of each action = A(s,a)
-        self.advantage = nn.Linear(
-            self.config.hidden_size,
-            num_actions
-        )
+        # Advantage A(s, a)
+        self.advantage = nn.Linear(32, num_actions)
 
     def forward(self, state):
-
-        features = self.feature(state)
+        features = self.network(state)
 
         value = self.value(features)
 
         advantage = self.advantage(features)
 
         q_values = (
-            value
-            + advantage
-            - advantage.mean(
-                dim=1,
-                keepdim=True
-            )
+                value
+                + advantage
+                - advantage.mean(dim=-1, keepdim=True)
         )
 
         return q_values

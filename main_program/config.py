@@ -18,51 +18,69 @@ class Config:
 
         #### Basic settings ####
         num_actions: int = 3,
-        num_steps: int = 200,
-        batch_size: int = 300,
-        lookback_window_size: int = 1,
-        num_episodes = 300,
-        num_evaluation_episodes=100,
+        num_steps: int = 500,
+        batch_size: int = 200,
+        lookback_window_size: int = 30,
+        agent4_window_size: int = 60,
+        num_episodes = 1000,
+        num_evaluation_episodes=10,
         device = DEVICE,
+        agent_type: int = 1, # agent types: 1,2,3,4
+
 
         #### Price dynamics ####
         S_0: float = 120.0,
         S_mean: float = 100.0,
-        sigma: float = 0.1,
+        sigma: float = 0.15,
         sigma_mean: float = 0.05,
-        kappa: float = 2.0,
-        mu_mean = 0.08,
-        T: int = 12,
+        kappa: float = 1.0,
+        # kappa_mean: float = 0.10,
+        mu_mean = 0.03,
+        T: int = 52,
+
 
         #### Reward parameters ####
-        gamma: float = 0.98, # discount factor
-        half_bidask: float = 0.001,
-        risk_aversion: float = 0.02,
+        gamma: float = 0.999, # discount factor
+        half_bidask: float = 0.0003,
+        risk_aversion: float = 0.2,
         threshold:float =0.1,
 
         #### Agent learning parameters ####
         # epsilon-greedy policy
-        learning_rate: float = 0.0003,
+        learning_rate: float = 0.001,
         epsilon: float = 1.0,
-        epsilon_min: float = 0.05,
-        epsilon_decay: float = 0.995,
+        epsilon_min: float = 0.005,
+        epsilon_decay: float = 0.98,
 
         # Softmax policy
         use_softmax: bool = True,
         temperature: float = 1.0,
-        temperature_min: float = 0.05,
-        temperature_decay: float = 0.995,
+        temperature_min: float = 0.005,
+        temperature_decay: float = 0.99,
 
         #### Replay Buffer parameters ####
-        buffer_is_on: bool = True,
         replay_capacity: int = 50000,
-        replay_batch_size: int = 128,
+        replay_batch_size: int = 64,
         replay_start_size:int = 1000,
 
         ### Model ###
-        DuelingDQN: bool = False,
-        GDQN: bool = True,
+        DuelingDQN: bool = True,
+        GDQN: bool = False,
         hidden_size: int = 64,
+
+        ### Plot agent action strategy
+        plot_action_strategy = False,
+
+        ### Prioritized Replay Buffer
+        per_alpha = 0.6,
+        per_beta_start=0.4,
+        per_beta_end = 1.0,
+        per_epsilon = 1e-6,
+        replay_type = "prioritized", # "prioritized"
+        train_frequency= 30,
+        target_update_frequency = 500,
+        max_grad_norm = 10.0
+
 
 
     ):
@@ -70,10 +88,15 @@ class Config:
         self.num_actions = num_actions
         self.num_steps = num_steps
         self.batch_size = batch_size
-        self.window_size = lookback_window_size
         self.num_episodes = num_episodes
         self.num_evaluation_episodes = num_evaluation_episodes
         self.device = device
+        self.agent_type = agent_type
+
+        if self.agent_type == 4:
+            self.window_size = agent4_window_size
+        else:
+            self.window_size = lookback_window_size
 
         # Price dynamics
         self.S_0 = S_0
@@ -83,12 +106,13 @@ class Config:
         self.kappa = kappa
         self.mu_mean = mu_mean
         self.T = T
+        # self.kappa_mean = kappa_mean
 
         # Reward
         self.gamma = gamma
         self.half_bidask= half_bidask
         self.risk_aversion = risk_aversion
-        self.threshold = threshold
+        # self.threshold = threshold
 
         # Agent - epsilon-greedy exploration
         self.learning_rate = learning_rate
@@ -103,7 +127,6 @@ class Config:
         self.temperature_decay = temperature_decay
 
         # Replay Buffer
-        self.buffer_is_on = buffer_is_on
         self.replay_capacity = replay_capacity
         self.replay_batch_size = replay_batch_size
         self.replay_start_size = replay_start_size
@@ -112,3 +135,21 @@ class Config:
         self.use_DuelingDQN = DuelingDQN
         self.use_GDQN = GDQN
         self.hidden_size = hidden_size
+
+        self.plot_action_strategy = plot_action_strategy
+
+        # Prioritized Replay Buffer
+        self.per_alpha = per_alpha
+        self.per_beta_start = per_beta_start
+        self.per_epsilon = per_epsilon
+
+        self.replay_type = replay_type
+        # options:
+        # "none"
+        # "uniform"
+        # "prioritized"
+
+        self.train_frequency = train_frequency
+        self.target_update_frequency = target_update_frequency
+        self.max_grad_norm = max_grad_norm
+        self.per_beta_end = per_beta_end

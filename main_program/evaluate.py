@@ -1,9 +1,9 @@
 import numpy as np
 import torch
 
-from config import Config
+from main_program.config import Config
 from environment import Environment
-from agent import DQNAgent
+from main_program.agent import DQNAgent
 import matplotlib.pyplot as plt
 
 
@@ -32,7 +32,7 @@ agent = DQNAgent(config,state)
 # Load trained weights
 # --------------------------------------------------
 
-agent.model.load_state_dict(torch.load("dqn_model.pth",map_location=market.device))
+agent.model.load_state_dict(torch.load("../dqn_model.pth", map_location=market.device))
 
 # Evaluation mode
 agent.model.eval()

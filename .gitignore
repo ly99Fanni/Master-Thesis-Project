@@ -28,6 +28,13 @@ Thumbs.db
 *.pth
 
 # My files
-plots
-results
-plot.py
+plots/Evaluation
+plots/Archive
+old model weights
+prev_version
+results/Archieve
+testing
+
+# ppt
+*.pptx
+
